@@ -91,7 +91,7 @@ def depthFirstSearch(problem):
     from util import Stack
 
     fringe=Stack()
-    fringe.push((problem.getStartState,[]))
+    fringe.push((problem.getStartState(),[]))
     visited =set()
     while(not fringe.isEmpty()):
         st,acts = fringe.pop()
@@ -109,12 +109,40 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import Queue 
+
+    fringe=Queue()
+    fringe.push((problem.getStartState(),[]))
+    visited =set()
+    while(not fringe.isEmpty()):
+        st,acts = fringe.pop()
+        if (problem.isGoalState(st)):
+            return acts
+        if st in visited:
+            continue
+        visited.add(st)
+        for suc,a,cost in problem.getSuccessors(st):
+            if suc not in visited:
+                fringe.push((suc,acts+[a]))
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import PriorityQueue 
+
+    fringe = PriorityQueue()
+    fringe.push((problem.getStartState(),[],0),0)
+    visited =set()
+    while(not fringe.isEmpty()):
+        st,acts,pq = fringe.pop()
+        if (problem.isGoalState(st)):
+            return acts
+        if st in visited:
+            continue
+        visited.add(st)
+        for suc,a,cost in problem.getSuccessors(st):
+            if suc not in visited:
+                fringe.push((suc,acts+[a],pq+cost),pq+cost)
 
 def nullHeuristic(state, problem=None):
     """
@@ -126,7 +154,21 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import PriorityQueue 
+
+    fringe = PriorityQueue()
+    fringe.push((problem.getStartState(),[],0),0)
+    visited =set()
+    while(not fringe.isEmpty()):
+        st,acts,pq = fringe.pop()
+        if (problem.isGoalState(st)):
+            return acts
+        if st in visited:
+            continue
+        visited.add(st)
+        for suc,a,cost in problem.getSuccessors(st):
+            if suc not in visited:
+                fringe.push((suc,acts+[a],pq+cost),pq+cost+heuristic(suc,problem))
 
 
 # Abbreviations

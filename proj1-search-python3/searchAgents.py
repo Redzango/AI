@@ -282,6 +282,7 @@ class CornersProblem(search.SearchProblem):
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
         self.corners = ((1,1), (1,top), (right, 1), (right, top))
+        self.goal = [(1,1),(1,top),(right,1),(right,top)]
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print('Warning: no food in corner ' + str(corner))
@@ -296,18 +297,18 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition
+        return [self.startingPosition,4]
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        bool isGoal = false
-        if self.corners.isEmpty():
-            isGoal = ture
         
-        return isGoal
+        if state[1]==0:
+            return True
+        
+        return False
 
     def getSuccessors(self, state):
         """
@@ -324,7 +325,7 @@ class CornersProblem(search.SearchProblem):
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
-            x,y = currentPosition
+            x,y = state[0]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:

@@ -1,4 +1,4 @@
-# searchAgents.py
+#l searchAgents.py
 # ---------------
 # Licensing Information:  You are free to use or extend these projects for
 # educational purposes provided that (1) you do not distribute or publish
@@ -279,10 +279,10 @@ class CornersProblem(search.SearchProblem):
         Stores the walls, pacman's starting position and corners.
         """
         self.walls = startingGameState.getWalls()
-        self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
         self.corners = ((1,1), (1,top), (right, 1), (right, top))
-        self.goal = [(1,1),(1,top),(right,1),(right,top)]
+        self.startingGameState = startingGameState
+        self.start = (startingGameState.getPacmanPosition(),())
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print('Warning: no food in corner ' + str(corner))
@@ -297,7 +297,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return [self.startingPosition,4]
+        return self.start
 
     def isGoalState(self, state):
         """
@@ -305,10 +305,7 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         
-        if state[1]==0:
-            return True
-        
-        return False
+        return state[1]==self.corners
 
     def getSuccessors(self, state):
         """
@@ -326,12 +323,16 @@ class CornersProblem(search.SearchProblem):
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
             x,y = state[0]
+            corns = state[1]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
-                nextState = (nextx,nexty);
-                cost = 1
-                successors.append((nextState,action,cost))
+                nextPos = (nextx,nexty)
+                nextState = (nextPos,corns)
+                if nextPos in self.corners:
+                    nextState = (nextState[0],nextState[1]+nextPos)
+                
+                successors.append((nextState,action,1))
 
 
         self._expanded += 1 # DO NOT CHANGE

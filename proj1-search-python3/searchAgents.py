@@ -381,6 +381,7 @@ def cornersHeuristic(state, problem):
             minCorner.append((abs(xyself[0]-xy[0])+abs(xyself[1]-xy[1]),xy))
         hc += min(minCorner)[0]
         cornersLeft = [xy for xy in cornersLeft if xy != min(minCorner)[1]]
+        xyself = min(minCorner)[1]
         minCorner = []
     
     return hc # Default to trivial solution
@@ -477,7 +478,27 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    
+    def manhatD(xy1,xy2):
+        return abs(xy1[0]-xy2[0])+abs(xy1[1]-xy2[1])
+
+    if problem.isGoalState(state): return 0
+    hc1=0
+    foodL=state[1].asList()
+    selfxy = state[0]
+    foodDist = []
+    for xy in foodL:
+        foodDist.append((manhatD(selfxy,xy),xy))
+    hc1+= min(foodDist)[0]
+    hc1+= len(foodL)-1
+    
+    hc2=0
+    if len(foodL) >1:
+        d1,xy1 = max(foodDist)
+        d2,xy2 = max([x for x in foodDist if x != (d1,xy1)])
+        hc2+= manhatD(xy1,xy2)
+
+    return max(hc1,hc2)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

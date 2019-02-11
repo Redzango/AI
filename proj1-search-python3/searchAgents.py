@@ -304,8 +304,11 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        
-        return state[1]==self.corners
+        cornerCount = 0
+        for visitedC in self.corners:
+            if visitedC in state[1]:
+                cornerCount += 1
+        return cornerCount == 4
 
     def getSuccessors(self, state):
         """
@@ -330,7 +333,7 @@ class CornersProblem(search.SearchProblem):
                 nextPos = (nextx,nexty)
                 nextState = (nextPos,corns)
                 if nextPos in self.corners:
-                    nextState = (nextState[0],nextState[1]+nextPos)
+                    nextState = (nextState[0],nextState[1]+(nextPos,))
                 
                 successors.append((nextState,action,1))
 
@@ -344,7 +347,7 @@ class CornersProblem(search.SearchProblem):
         include an illegal move, return 999999.  This is implemented for you.
         """
         if actions == None: return 999999
-        x,y= self.startingPosition
+        x,y= self.start[0]
         for action in actions:
             dx, dy = Actions.directionToVector(action)
             x, y = int(x + dx), int(y + dy)
@@ -365,14 +368,20 @@ def cornersHeuristic(state, problem):
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
     """
+    if problem.isGoalState(state): return 0
     corners = problem.corners # These are the corner coordinates
+    visited = state[1]
+    cornersLeft = [x for x in corners if x not in visited]
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-    xyself = state.position
-    
-    for xy in corners:
-        hc += abs(xyself[0]-xy[0])+abs(xyself[1]-xy[1])
-    hc = 0;
-    if isGoalState(state): return 0
+    xyself = state[0]
+    minCorner = []
+    hc = 0
+    for i in range(0,len(cornersLeft)):
+        for xy in cornersLeft:
+            minCorner.append((abs(xyself[0]-xy[0])+abs(xyself[1]-xy[1]),xy))
+        hc += min(minCorner)[0]
+        cornersLeft = [xy for xy in cornersLeft if xy != min(minCorner)[1]]
+        minCorner = []
     
     return hc # Default to trivial solution
 

@@ -281,7 +281,6 @@ class CornersProblem(search.SearchProblem):
         self.walls = startingGameState.getWalls()
         top, right = self.walls.height-2, self.walls.width-2
         self.corners = ((1,1), (1,top), (right, 1), (right, top))
-        self.startingGameState = startingGameState
         self.start = (startingGameState.getPacmanPosition(),())
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
@@ -332,7 +331,7 @@ class CornersProblem(search.SearchProblem):
             if not self.walls[nextx][nexty]:
                 nextPos = (nextx,nexty)
                 nextState = (nextPos,corns)
-                if nextPos in self.corners:
+                if (nextPos in self.corners and nextPos not in corns):
                     nextState = (nextState[0],nextState[1]+(nextPos,))
                 
                 successors.append((nextState,action,1))
@@ -493,10 +492,16 @@ def foodHeuristic(state, problem):
     hc1+= len(foodL)-1
     
     hc2=0
+    foodDistFF = []
     if len(foodL) >1:
         d1,xy1 = max(foodDist)
-        d2,xy2 = max([x for x in foodDist if x != (d1,xy1)])
+        for xy in foodL:
+            foodDistFF.append((manhatD(xy1,xy),xy))
+        d2,xy2 = max(foodDistFF)
         hc2+= manhatD(xy1,xy2)
+        hc2+= min(manhatD(selfxy,xy1),manhatD(selfxy,xy2))
+    
+  
 
     return max(hc1,hc2)
 

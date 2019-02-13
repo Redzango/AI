@@ -95,10 +95,10 @@ def depthFirstSearch(problem):
     visited =set()
     while(not fringe.isEmpty()):
         st,acts = fringe.pop()
-        if (problem.isGoalState(st)):
-            return acts
         if st in visited:
             continue
+        if (problem.isGoalState(st)):
+            return acts
         visited.add(st)
         for suc,a,cost in problem.getSuccessors(st):
             if suc not in visited:
@@ -116,10 +116,10 @@ def breadthFirstSearch(problem):
     visited =set()
     while(not fringe.isEmpty()):
         st,acts = fringe.pop()
-        if (problem.isGoalState(st)):
-            return acts
         if st in visited:
             continue
+        if (problem.isGoalState(st)):
+            return acts
         visited.add(st)
         for suc,a,cost in problem.getSuccessors(st):
             if suc not in visited:

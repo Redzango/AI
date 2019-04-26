@@ -45,6 +45,21 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
+        for i in range(iterations):
+            oldv=self.values.copy()
+            for s in mdp.getStates():
+                if (nmd.isTerminal(s)):
+                    self.values[s]=0
+                    continue
+                maxu = None
+                for a in mdp.getPossibleActions(s):
+                    eu=0
+                    for (sp,p) in mdp.getTransitionStatesAndProbs(s,a):
+                        r=mdp.getReward(s,a,sp)
+                        r+= seld.discount * oldv[sp]
+                        eu+= p*r
+                    if (maxu is None or eu>maxu): maxu=eu
+                seld.values[s] = maxu
 
 
     def getValue(self, state):

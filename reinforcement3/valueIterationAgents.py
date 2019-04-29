@@ -48,7 +48,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         for i in range(iterations):
             oldv=self.values.copy()
             for s in mdp.getStates():
-                if (nmd.isTerminal(s)):
+                if (mdp.isTerminal(s)):
                     self.values[s]=0
                     continue
                 maxu = None
@@ -56,10 +56,10 @@ class ValueIterationAgent(ValueEstimationAgent):
                     eu=0
                     for (sp,p) in mdp.getTransitionStatesAndProbs(s,a):
                         r=mdp.getReward(s,a,sp)
-                        r+= seld.discount * oldv[sp]
+                        r+= self.discount * oldv[sp]
                         eu+= p*r
                     if (maxu is None or eu>maxu): maxu=eu
-                seld.values[s] = maxu
+                self.values[s] = maxu
 
 
     def getValue(self, state):
@@ -75,7 +75,13 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        eu=0
+        oldv=self.values.copy()
+        for (sp,p) in self.mdp.getTransitionStatesAndProbs(state,action):
+            r=self.mdp.getReward(state,action,sp)
+            r+= self.discount * oldv[sp]
+            eu+= p*r
+        return eu
 
     def computeActionFromValues(self, state):
         """
@@ -87,7 +93,11 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        euA = (None,None)
+        for a in self.mdp.getPossibleActions(state):
+            qV=self.computeQValueFromValues(state,a)
+            if(euA[0] is None or qV>euA[0]): auA=(qV,a)
+        return euA[1]
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)

@@ -93,11 +93,15 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        euA = (None,None)
-        for a in self.mdp.getPossibleActions(state):
-            qV=self.computeQValueFromValues(state,a)
-            if(euA[0] is None or qV>euA[0]): auA=(qV,a)
-        return euA[1]
+        #euA = (None,None)
+        actionC = util.Counter()
+        actions = self.mdp.getPossibleActions(state)
+        if(not actions): return None
+
+        for a in actions:
+            actionC[a]=self.computeQValueFromValues(state,a)
+        
+        return actionC.argMax()
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)

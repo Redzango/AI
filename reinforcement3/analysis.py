@@ -20,8 +20,8 @@
 # value iteration.
 
 def question2():
-    answerDiscount = 0.0
-    answerNoise = 0.2
+    answerDiscount = 0.9
+    answerNoise = 0.0
     return answerDiscount, answerNoise
 
 def question3a():
@@ -62,7 +62,8 @@ def question3e():
 def question6():
     answerEpsilon = None
     answerLearningRate = None
-    return answerEpsilon, answerLearningRate
+    return 'NOT POSSIBLE'
+    #return answerEpsilon, answerLearningRate
     # If not possible, return 'NOT POSSIBLE'
 
 if __name__ == '__main__':
